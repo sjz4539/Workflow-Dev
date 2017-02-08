@@ -166,7 +166,8 @@ public class RemoteLibrary extends Library{
 			
 		}else{
 		
-			Core.getGuiFactory().showRemoteChooserDialog(account, null, Chooser.Mode.MODE_SAVE_FILE, false, "Add Resource to Library...", "Specify where " + filename + " should be stored.", this.getRoot(), filename,
+			Core.getGuiFactory().showRemoteChooserDialog(
+				account, null, Chooser.Mode.MODE_SAVE_FILE, false, "Add Resource to Library...", "Specify where " + filename + " should be stored.", this.getRoot(), filename, null,
 				new ArgumentHandler<String>(){
 					public void handle(String arg) {
 						//copy the file to the resource cache
@@ -225,8 +226,8 @@ public class RemoteLibrary extends Library{
 			
 		}else{
 		
-			Core.getGuiFactory().showRemoteChooserDialog(account, "", Chooser.Mode.MODE_SAVE_FILE, true, "Copy Resource", "Specify where " + resource.getName() + " should be copied to.", resource.getFolder(), resource.getName(),
-
+			Core.getGuiFactory().showRemoteChooserDialog(
+				account, "", Chooser.Mode.MODE_SAVE_FILE, true, "Copy Resource", "Specify where " + resource.getName() + " should be copied to.", resource.getFolder(), resource.getName(), null,
 				new ArgumentHandler<String>(){
 					public void handle(String arg) {
 						
@@ -296,8 +297,8 @@ public class RemoteLibrary extends Library{
 			
 		}else{
 		
-			Core.getGuiFactory().showRemoteChooserDialog(account, "", Chooser.Mode.MODE_SAVE_FILE, true, "Move Resource", "Specify where " + resource.getName() + " should be moved to.", resource.getFolder(), resource.getName(),
-
+			Core.getGuiFactory().showRemoteChooserDialog(
+				account, "", Chooser.Mode.MODE_SAVE_FILE, true, "Move Resource", "Specify where " + resource.getName() + " should be moved to.", resource.getFolder(), resource.getName(), null,
 				new ArgumentHandler<String>(){
 					public void handle(String arg) {
 						
@@ -367,8 +368,9 @@ public class RemoteLibrary extends Library{
 			
 		}else{
 		
-			Core.getGuiFactory().showRemoteChooserDialog(account, "", Chooser.Mode.MODE_SINGLE_FILE, false, "Missing Resource", "The resource " + resource.getName() + " cannot be located.\nPlease enter its location.", resource.getFolder(), resource.getName(),
-
+			Core.getGuiFactory().showRemoteChooserDialog(
+				account, "", Chooser.Mode.MODE_SINGLE_FILE, false, "Missing Resource", "The resource " + resource.getName() + " cannot be located.\nPlease enter its location.", 
+				resource.getFolder(), resource.getName(), null,
 				new ArgumentHandler<String>(){
 					public void handle(String arg) {
 						if(validatePath(arg)){

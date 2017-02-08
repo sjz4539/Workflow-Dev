@@ -224,7 +224,7 @@ public abstract class Library implements Serializable{
 			ResourceTaskService.loadResource(r, ()->{ this.exportResource(r, onSuccess, onFailure); }, null);
 		}else{
 			Core.getGuiFactory().showLocalChooserDialog(
-				null, Chooser.Mode.MODE_SAVE_FILE, false, "Export Resource...", "Select an export location for " + r.getName(), r.getFolder(), r.getName(),
+				null, Chooser.Mode.MODE_SAVE_FILE, false, "Export Resource...", "Select an export location for " + r.getName(), r.getFolder(), r.getName(), null,
 				new ArgumentHandler<String>(){
 					public void handle(String arg) {
 						

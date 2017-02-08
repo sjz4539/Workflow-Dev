@@ -48,25 +48,11 @@ public interface IWorkflowGUIFactory{
 	
 	public void showNewTaskListDialog();
 	
-	default void showLocalChooserDialog(
-			String name, Chooser.Mode mode, boolean editable, String title,
-			String message, String initialDirectory, String initialFilename,
-			ArgumentHandler<String> onSuccess, SimpleHandler onCancel){
-		showLocalChooserDialog(name, mode, editable, title, message, initialDirectory, initialFilename, null, onSuccess, onCancel);
-	}
-	
 	public void showLocalChooserDialog(
 			String name, Chooser.Mode mode, boolean editable, String title,
 			String message, String initialDirectory, String initialFilename,
 			List<String> extensions, ArgumentHandler<String> onSuccess, SimpleHandler onCancel);
 
-	default void showRemoteChooserDialog(
-			Account account, String name, Chooser.Mode mode, boolean editable,
-			String title, String message, String initialDirectory, String initialFilename,
-			ArgumentHandler<String> onSuccess, SimpleHandler onCancel){
-		showRemoteChooserDialog(account, initialFilename, mode, editable, title, message, initialDirectory, initialFilename, null, onSuccess, onCancel);
-	}
-	
 	public void showRemoteChooserDialog(
 			Account account, String name, Chooser.Mode mode, boolean editable,
 			String title, String message, String initialDirectory, String initialFilename,

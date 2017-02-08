@@ -168,7 +168,9 @@ public class LocalLibrary extends Library{
 		//		-if the function returns success, call onSuccess.handle()
 		//		-else, call onFailure.handle()
 		
-		Core.getGuiFactory().showLocalChooserDialog(null, Chooser.Mode.MODE_SAVE_FILE, false, "Add Resource to Library...", "Please indicate where to store this resource in the chosen library.", this.getRoot(), source.substring(source.lastIndexOf(File.separator) + 1),
+		Core.getGuiFactory().showLocalChooserDialog(
+			null, Chooser.Mode.MODE_SAVE_FILE, false, "Add Resource to Library...", "Please indicate where to store this resource in the chosen library.", 
+			this.getRoot(), source.substring(source.lastIndexOf(File.separator) + 1), null,
 			new ArgumentHandler<String>(){
 				public void handle(String arg) {
 
@@ -215,7 +217,8 @@ public class LocalLibrary extends Library{
 		//		-if the function returns success, call onSuccess.handle()
 		//		-else, call onFailure.handle()
 		
-		Core.getGuiFactory().showLocalChooserDialog(null, Chooser.Mode.MODE_SAVE_FILE, false, "Copy resource to...", null, resource.getFolder(), resource.getName(),
+		Core.getGuiFactory().showLocalChooserDialog(
+			null, Chooser.Mode.MODE_SAVE_FILE, false, "Copy resource to...", null, resource.getFolder(), resource.getName(), null,
 			new ArgumentHandler<String>(){
 				public void handle(String arg) {
 					
@@ -276,7 +279,8 @@ public class LocalLibrary extends Library{
 		//		-if the function returns success, call onSuccess.handle()
 		//		-else, call onFailure.handle()
 		
-		Core.getGuiFactory().showLocalChooserDialog(null, Chooser.Mode.MODE_SAVE_FILE, false, "Copy resource to...", null, resource.getFolder(), resource.getName(),
+		Core.getGuiFactory().showLocalChooserDialog(
+			null, Chooser.Mode.MODE_SAVE_FILE, false, "Copy resource to...", null, resource.getFolder(), resource.getName(), null,
 			new ArgumentHandler<String>(){
 				public void handle(String arg) {
 					
@@ -332,7 +336,8 @@ public class LocalLibrary extends Library{
 	//locate the file that holds the resource's data on the local disk
 	public void locateResource(final FileResource resource, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
 		//spawn a graphical interface to request a new path for the resource
-		Core.getGuiFactory().showLocalChooserDialog(null, Chooser.Mode.MODE_SAVE_FILE, false, "Locate " + resource.getName() + "...", null, resource.getFolder(), resource.getName(),
+		Core.getGuiFactory().showLocalChooserDialog(
+			null, Chooser.Mode.MODE_SAVE_FILE, false, "Locate " + resource.getName() + "...", null, resource.getFolder(), resource.getName(), null,
 			new ArgumentHandler<String>(){
 				public void handle(String arg) {
 					if(validatePath(arg)){
