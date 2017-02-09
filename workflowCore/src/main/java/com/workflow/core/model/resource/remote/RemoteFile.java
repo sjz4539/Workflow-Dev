@@ -15,7 +15,7 @@ public class RemoteFile extends RemoteResource{
 	}
 
 	public InputStream getIconResourceStream() {
-		return RemoteFile.class.getResourceAsStream("../../../resources/document_16.png");
+		return RemoteFile.class.getResourceAsStream("/com/workflow/core/resources/document_16.png");
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.workflow.core.controller.Core;
 import com.workflow.core.controller.SimpleHandler;
+import com.workflow.core.controller.io.FileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
 import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.ResourceTask;
@@ -35,7 +36,7 @@ public class ResourceRunnable extends Thread{
 				if(!Core.getResourceCache().containsFileRecord(resource)){
 					Core.getResourceCache().addFile(resource);
 				}
-				status = account.getFileOps().loadFile(account, resource.getAbsolutePath(), Core.getResourceCache().getPath(resource));
+				status = FileOps.Remote.loadFile(account, resource.getAbsolutePath(), Core.getResourceCache().getPath(resource));
 				
 				switch(status.getCode()){
 					
@@ -60,7 +61,7 @@ public class ResourceRunnable extends Thread{
 				break;
 				
 			case SEND:
-				status = account.getFileOps().saveFile(account, Core.getResourceCache().getAbsolutePath(resource), resource.getAbsolutePath());
+				status = FileOps.Remote.saveFile(account, Core.getResourceCache().getAbsolutePath(resource), resource.getAbsolutePath());
 				
 				switch(status.getCode()){
 					case SUCCESS:

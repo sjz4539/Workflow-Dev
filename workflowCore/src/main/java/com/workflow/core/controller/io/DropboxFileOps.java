@@ -21,7 +21,16 @@ import com.workflow.core.model.resource.remote.RemoteFolder;
  * @author Test
  *
  */
-public class DropboxFileOps extends FileOps{
+public class DropboxFileOps implements RemoteFileOps{
+	
+	private static DropboxFileOps fileops;
+	
+	public static RemoteFileOps getFileOps(){
+		if(fileops == null){
+			fileops = new DropboxFileOps();
+		}
+		return fileops;
+	}
 	
 	public FileOpsStatus loadFile(Account source, String remoteSource, String localDest){	
 		DbxClient client = getClient(source);
@@ -168,11 +177,7 @@ public class DropboxFileOps extends FileOps{
 		}
 		return result;
 	}
-	
-	public FileOpsStatus copyFile(Account source, RemoteFile remoteSource, String remoteDest, boolean overwrite){
-		return copyFile(source, remoteSource.getPath(), remoteDest, overwrite);
-	}
-	
+
 	public FileOpsStatus moveFile(Account source, String remoteSource, String remoteDest, boolean overwrite){
 		DbxClient client = getClient(source);
 		FileOpsStatus result = FileOpsStatus.SUCCESS();
@@ -215,10 +220,6 @@ public class DropboxFileOps extends FileOps{
 		return result;
 	}
 	
-	public FileOpsStatus moveFile(Account source, RemoteFile remoteSource, String remoteDest, boolean overwrite){
-		return moveFile(source, remoteSource.getPath(), remoteDest, overwrite);
-	}
-	
 	public FileOpsStatus deleteFile(Account source, String remoteSource){
 		DbxClient client = getClient(source);
 		FileOpsStatus result = FileOpsStatus.SUCCESS();
@@ -255,10 +256,6 @@ public class DropboxFileOps extends FileOps{
 			result = FileOpsStatus.DROPBOX_NULL_CLIENT();
 		}
 		return result;
-	}
-	
-	public FileOpsStatus deleteFile(Account source, RemoteFile remoteSource){
-		return deleteFile(source, remoteSource.getPath());
 	}
 	
 	public FileOpsStatus loadFolder(Account source, RemoteFolder remoteSource){

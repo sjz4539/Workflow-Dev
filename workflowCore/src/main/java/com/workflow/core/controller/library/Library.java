@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.workflow.core.controller.io.FileOps;
+import com.workflow.core.controller.io.RemoteFileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
-import com.workflow.core.controller.io.LocalFileOps;
 import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.ResourceTaskService;
 import com.workflow.core.model.resource.library.LibraryResource;
 import com.workflow.core.model.resource.task.FileResource;
 import com.workflow.core.view.chooser.Chooser;
-import com.workflow.core.view.chooser.ILocalChooserDialog;
 import com.workflow.core.view.dialog.ITextInputDialog;
 import com.workflow.core.view.library.ILibraryMenu;
 import com.workflow.core.view.library.ILibraryView;
@@ -39,8 +38,6 @@ public abstract class Library implements Serializable{
 	public static final String REMOVABLE_LIBRARY_FILE_EXTENSION = ".wrl";
 	public static final String REMOVABLE_LIBRARY_FILE_DESCRIPTION = "Removable Workflow Library";
 	public static final String DEFAULT_LIBRARY_FILENAME = "WorkflowLibrary";
-	
-	public static final Account LOCAL_ACCOUNT = new Account(Account.AccountType.ACCOUNT_TYPE_LOCAL);
 	
 	protected String name = ""; //this library's name
 	protected int type = -1; //the type of this library
@@ -235,7 +232,7 @@ public abstract class Library implements Serializable{
 								}
 								break;
 							case FILE_ALREADY_EXISTS:
-								FileOps.requestOverwrite(arg, new SimpleHandler(){
+								RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 									public void handle() {
 										exportResource(r, arg, true);
 									}
@@ -262,7 +259,7 @@ public abstract class Library implements Serializable{
 	
 	public FileOpsStatus exportResource(FileResource r, String destination, boolean overwrite){
 		if(r.isLoaded()){
-			return LocalFileOps.copyFile(r.getAbsolutePath(), destination, overwrite);
+			return FileOps.Local.copyFile(r.getAbsolutePath(), destination, overwrite);
 		}else{
 			return FileOpsStatus.RESOURCE_NOT_LOADED();
 		}

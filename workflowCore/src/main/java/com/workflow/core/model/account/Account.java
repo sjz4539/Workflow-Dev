@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 import com.workflow.core.controller.SimpleHandler;
 import com.workflow.core.controller.io.DropboxFileOps;
-import com.workflow.core.controller.io.FileOps;
+import com.workflow.core.controller.io.RemoteFileOps;
 import com.workflow.core.controller.io.GoogleFileOps;
-import com.workflow.core.controller.io.LocalFileOps;
 import com.workflow.core.controller.oauth.DropboxOauthHandler;
 import com.workflow.core.controller.oauth.GoogleOauthHandler;
 import com.workflow.core.controller.oauth.OauthHandler;
@@ -17,12 +16,11 @@ public class Account implements Serializable{
 	
 	private String name, accessToken, refreshToken;
 	private AccountType type;
-	
-	private transient FileOps fileOps = null;
+
 	private transient OauthHandler oauth = null;
 	
 	public enum AccountType{
-		ACCOUNT_TYPE_DROPBOX, ACCOUNT_TYPE_GOOGLE, ACCOUNT_TYPE_LOCAL
+		ACCOUNT_TYPE_DROPBOX, ACCOUNT_TYPE_GOOGLE
 	}
 	
 	public Account(AccountType t){
@@ -74,23 +72,14 @@ public class Account implements Serializable{
 		refreshToken = r;
 	}
 	
-	public FileOps getFileOps(){
-		if(fileOps == null){
-			switch(type){
-				case ACCOUNT_TYPE_DROPBOX:
-					fileOps = new DropboxFileOps();
-					return fileOps;
-				case ACCOUNT_TYPE_GOOGLE:
-					fileOps = new GoogleFileOps();
-					return fileOps;
-				case ACCOUNT_TYPE_LOCAL:
-					fileOps = new LocalFileOps();
-					return fileOps;
-				default:
-					return null;
-			}
-		}else{
-			return fileOps;
+	public Class<? extends RemoteFileOps> getFileOps(){
+		switch(type){
+			case ACCOUNT_TYPE_DROPBOX:
+				return DropboxFileOps.class;
+			case ACCOUNT_TYPE_GOOGLE:
+				return GoogleFileOps.class;
+			default:
+				return null;
 		}
 	}
 	

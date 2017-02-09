@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.workflow.core.controller.SimpleHandler;
+import com.workflow.core.controller.io.FileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
 import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.remote.RemoteFile;
@@ -64,7 +65,7 @@ public class RemoteChooserPane extends HBox implements IRemoteChooserPane{
 		button.setOnAction((on_click)->{
 				
 			if(account != null){
-				if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.SUCCESS){
+				if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.SUCCESS){
 					showChooser();
 				}else{
 					account.getAuth(

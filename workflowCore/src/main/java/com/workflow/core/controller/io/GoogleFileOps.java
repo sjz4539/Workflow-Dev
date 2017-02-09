@@ -11,8 +11,17 @@ import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.remote.RemoteFile;
 import com.workflow.core.model.resource.remote.RemoteFolder;
 
-public class GoogleFileOps extends FileOps{
+public class GoogleFileOps implements RemoteFileOps{
 
+	private static GoogleFileOps fileops;
+	
+	protected static RemoteFileOps getFileOps(){
+		if(fileops == null){
+			fileops = new GoogleFileOps();
+		}
+		return fileops;
+	}
+	
 	public FileOpsStatus loadFile(Account source, String remoteSource, String localDest){
 		GoogleCredential credential = getCredential(source);
 		Drive drive = getDrive();
@@ -46,10 +55,6 @@ public class GoogleFileOps extends FileOps{
 		return FileOpsStatus.NOT_ALLOWED();
 	}
 	
-	public FileOpsStatus copyFile(Account source, RemoteFile remoteSource, String remoteDest, boolean overwrite){
-		return copyFile(source, remoteSource.getPath(), remoteDest, overwrite);
-	}
-	
 	public FileOpsStatus moveFile(Account source, String remoteSource, String remoteDest, boolean overwrite){
 		GoogleCredential credential = getCredential(source);
 		Drive drive = getDrive();
@@ -61,10 +66,6 @@ public class GoogleFileOps extends FileOps{
 		return FileOpsStatus.NOT_ALLOWED();
 	}
 	
-	public FileOpsStatus moveFile(Account source, RemoteFile remoteSource, String remoteDest, boolean overwrite){
-		return moveFile(source, remoteSource.getPath(), remoteDest, overwrite);
-	}
-	
 	public FileOpsStatus deleteFile(Account source, String remoteSource){
 		GoogleCredential credential = getCredential(source);
 		Drive drive = getDrive();
@@ -74,10 +75,6 @@ public class GoogleFileOps extends FileOps{
 		}
 		
 		return FileOpsStatus.NOT_ALLOWED();
-	}
-	
-	public FileOpsStatus deleteFile(Account source, RemoteFile remoteSource){
-		return deleteFile(source, remoteSource.getPath());
 	}
 	
 	public FileOpsStatus loadFolder(Account source, RemoteFolder remoteSource){

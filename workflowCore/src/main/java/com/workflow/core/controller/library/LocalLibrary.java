@@ -14,17 +14,12 @@ import com.workflow.core.controller.ArgumentHandler;
 import com.workflow.core.controller.Core;
 import com.workflow.core.controller.SimpleHandler;
 import com.workflow.core.controller.io.FileOps;
+import com.workflow.core.controller.io.RemoteFileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
-import com.workflow.core.controller.io.LocalFileOps;
 import com.workflow.core.model.account.Account;
-import com.workflow.core.model.resource.ResourceTaskService;
 import com.workflow.core.model.resource.library.LocalLibraryResource;
 import com.workflow.core.model.resource.task.FileResource;
-import com.workflow.core.model.resource.task.Resource;
-import com.workflow.core.view.IWorkflowGUIFactory;
 import com.workflow.core.view.chooser.Chooser;
-import com.workflow.core.view.chooser.ILocalChooserDialog;
-import com.workflow.core.view.chooser.ILocalChooserPane;
 
 public class LocalLibrary extends Library{
 
@@ -37,7 +32,7 @@ public class LocalLibrary extends Library{
 	}
 	
 	public Account getAccount(){
-		return LOCAL_ACCOUNT;
+		return null;
 	}
 	
 	public boolean saveTasks() {
@@ -174,16 +169,16 @@ public class LocalLibrary extends Library{
 			new ArgumentHandler<String>(){
 				public void handle(String arg) {
 
-					switch(LocalFileOps.copyFile(source, arg, overwrite).getCode()){
+					switch(FileOps.Local.copyFile(source, arg, overwrite).getCode()){
 						case SUCCESS:
 							if(onSuccess != null){
 								onSuccess.handle();
 							}
 							break;
 						case FILE_ALREADY_EXISTS:
-							FileOps.requestOverwrite(arg, new SimpleHandler(){
+							RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 								public void handle() {
-									LocalFileOps.copyFile(source, arg, true);
+									FileOps.Local.copyFile(source, arg, true);
 								}
 							}, null);
 							break;
@@ -230,7 +225,7 @@ public class LocalLibrary extends Library{
 							}
 							break;
 						case FILE_ALREADY_EXISTS:
-							FileOps.requestOverwrite(arg, new SimpleHandler(){
+							RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 								public void handle() {
 									copyResource(resource, arg, true);
 								}
@@ -260,7 +255,7 @@ public class LocalLibrary extends Library{
 	public FileOpsStatus copyResource(FileResource resource, String destination, boolean overwrite) {
 		//if the path is valid, perform the copy, else return null.
 		if(validatePath(destination)){
-			return account.getFileOps().copyFile(account, resource.getAbsolutePath(), destination, overwrite);
+			return FileOps.Local.copyFile(resource.getAbsolutePath(), destination, overwrite);
 		}else{
 			return FileOpsStatus.INVALID_DESTINATION_PATH();
 		}
@@ -291,7 +286,7 @@ public class LocalLibrary extends Library{
 							}
 							break;
 						case FILE_ALREADY_EXISTS:
-							FileOps.requestOverwrite(arg, new SimpleHandler(){
+							RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 								public void handle() {
 									copyResource(resource, arg, true);
 								}
@@ -322,7 +317,7 @@ public class LocalLibrary extends Library{
 		//if the path is not a child of this library's root, request a new path
 		if(validatePath(destination)){
 			resource.setPath(destination);
-			return account.getFileOps().moveFile(account, resource.getAbsolutePath(), destination, overwrite);
+			return FileOps.Local.moveFile(resource.getAbsolutePath(), destination, overwrite);
 		}else{
 			return FileOpsStatus.INVALID_DESTINATION_PATH();
 		}
@@ -330,7 +325,7 @@ public class LocalLibrary extends Library{
 
 	//delete the file that holds the resource's data on the local disk
 	public FileOpsStatus deleteResource(FileResource resource) {
-		return account.getFileOps().deleteFile(account, resource.getAbsolutePath());
+		return FileOps.Local.deleteFile(resource.getAbsolutePath());
 	}
 
 	//locate the file that holds the resource's data on the local disk

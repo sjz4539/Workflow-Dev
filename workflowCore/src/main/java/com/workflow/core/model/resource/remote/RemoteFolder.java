@@ -3,6 +3,7 @@ package com.workflow.core.model.resource.remote;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.workflow.core.controller.io.FileOps;
 import com.workflow.core.model.account.Account;
 
 public class RemoteFolder extends RemoteResource{
@@ -16,14 +17,14 @@ public class RemoteFolder extends RemoteResource{
 	
 	public ArrayList<RemoteFile> getFiles(){
 		if(files == null){
-			source.getFileOps().loadFolder(source, this);
+			FileOps.Remote.loadFolder(source, this);
 		}
 		return files;
 	}
 	
 	public ArrayList<RemoteFolder> getFolders(){
 		if(folders == null){
-			source.getFileOps().loadFolder(source, this);
+			FileOps.Remote.loadFolder(source, this);
 		}
 		return folders;
 	}

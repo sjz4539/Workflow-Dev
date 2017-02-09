@@ -1,14 +1,13 @@
 package com.workflow.core.model.resource.cache;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 import com.workflow.core.controller.Core;
+import com.workflow.core.controller.io.FileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
-import com.workflow.core.controller.io.LocalFileOps;
 import com.workflow.core.controller.library.Library;
 import com.workflow.core.model.resource.task.FileResource;
 
@@ -119,7 +118,7 @@ public class ResourceCache {
 	}
 	
 	public boolean removeFile(FileResource r){
-		if(LocalFileOps.deleteFile(getPath(r)).getCode() == FileOpsStatus.Code.SUCCESS){
+		if(FileOps.Local.deleteFile(getPath(r)).getCode() == FileOpsStatus.Code.SUCCESS){
 			//Core.getProcessMonitor().remove(r); //if we deleted this resource, it's obviously not open.
 			fileMap.get(r.getParentLibrary()).remove(r);
 			return true;
@@ -152,7 +151,7 @@ public class ResourceCache {
 				}
 				
 				if(libResult){ //if all cached files for this library were removed, remove the library folder.
-					LocalFileOps.deleteFile(root + File.separator + libMap.get(l));
+					FileOps.Local.deleteFile(root + File.separator + libMap.get(l));
 					libMap.remove(l);
 				}
 				

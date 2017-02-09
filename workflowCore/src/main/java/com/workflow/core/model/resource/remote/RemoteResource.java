@@ -3,6 +3,7 @@ package com.workflow.core.model.resource.remote;
 import java.io.File;
 import java.io.InputStream;
 
+import com.workflow.core.controller.library.Library;
 import com.workflow.core.model.account.Account;
 
 public abstract class RemoteResource {
@@ -10,6 +11,7 @@ public abstract class RemoteResource {
 	protected String name, id;
 	protected RemoteFolder parent = null;
 	protected Account source;
+	protected Library library;
 	
 	protected RemoteResource(String n, RemoteFolder p, Account s){
 		name = n;
@@ -36,6 +38,10 @@ public abstract class RemoteResource {
 	
 	public Account getSource(){
 		return source;
+	}
+	
+	public Library getLibrary(){
+		return library;
 	}
 	
 	public RemoteFolder getParent(){

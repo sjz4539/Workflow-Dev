@@ -3,6 +3,7 @@ package com.workflow.windows.view.chooser;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.workflow.core.controller.io.FileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
 import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.remote.RemoteFile;
@@ -112,7 +113,7 @@ public class RemoteChooser extends Dialog<ButtonType>{
 				dialog.setContentText("Enter a name for the new folder");
 				Optional<String> name = dialog.showAndWait();
 				if(name.isPresent() && name.get().length() > 0){
-					if(cur.getSource().getFileOps().createFolder(cur.getSource(), cur, name.get()).getCode() == FileOpsStatus.Code.SUCCESS){
+					if(FileOps.Remote.createFolder(cur.getSource(), cur, name.get()).getCode() == FileOpsStatus.Code.SUCCESS){
 						cur.clear();
 						updateUI();
 					};

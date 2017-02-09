@@ -14,8 +14,8 @@ import com.workflow.core.controller.ArgumentHandler;
 import com.workflow.core.controller.Core;
 import com.workflow.core.controller.SimpleHandler;
 import com.workflow.core.controller.io.FileOps;
+import com.workflow.core.controller.io.RemoteFileOps;
 import com.workflow.core.controller.io.FileOpsStatus;
-import com.workflow.core.controller.io.LocalFileOps;
 import com.workflow.core.model.account.Account;
 import com.workflow.core.model.resource.ResourceTaskService;
 import com.workflow.core.model.resource.library.RemoteLibraryResource;
@@ -23,8 +23,6 @@ import com.workflow.core.model.resource.remote.RemoteFolder;
 import com.workflow.core.model.resource.task.FileResource;
 import com.workflow.core.model.resource.task.Resource;
 import com.workflow.core.view.chooser.Chooser;
-import com.workflow.core.view.chooser.ILocalChooserDialog;
-import com.workflow.core.view.chooser.IRemoteChooserDialog;
 
 public class RemoteLibrary extends Library{
 
@@ -154,7 +152,7 @@ public class RemoteLibrary extends Library{
 		//		-else, call onFailure.handle()
 		String filename = source.substring(source.lastIndexOf(File.separator) + 1);
 		
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			
 			account.getAuth(
 				new SimpleHandler(){
@@ -174,16 +172,16 @@ public class RemoteLibrary extends Library{
 						FileResource newRes = new FileResource(parent, arg);
 						final String path = Core.getResourceCache().addFile(newRes);
 						
-						switch(LocalFileOps.copyFile(source, path, overwrite).getCode()){
+						switch(FileOps.Local.copyFile(source, path, overwrite).getCode()){
 							case SUCCESS:
 								if(onSuccess != null){
 									onSuccess.handle();
 								}
 								break;
 							case FILE_ALREADY_EXISTS:
-								FileOps.requestOverwrite(path, new SimpleHandler(){
+								RemoteFileOps.requestOverwrite(path, new SimpleHandler(){
 									public void handle() {
-										LocalFileOps.copyFile(source, path, true);
+										FileOps.Local.copyFile(source, path, true);
 									}
 								}, null);
 								break;
@@ -214,7 +212,7 @@ public class RemoteLibrary extends Library{
 	
 	public void copyResource(final FileResource resource, final SimpleHandler onSuccess, final SimpleHandler onFailure, final boolean overwrite) {
 		
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			
 			account.getAuth(
 				new SimpleHandler(){
@@ -238,7 +236,7 @@ public class RemoteLibrary extends Library{
 								}
 								break;
 							case FILE_ALREADY_EXISTS:
-								FileOps.requestOverwrite(arg, new SimpleHandler(){
+								RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 									public void handle() {
 										copyResource(resource, arg, true);
 									}
@@ -273,7 +271,7 @@ public class RemoteLibrary extends Library{
 	public FileOpsStatus copyResource(FileResource resource, String destination, boolean overwrite) {
 		//if the path is valid, perform the copy, else return null.
 		if(validatePath(destination)){
-			return account.getFileOps().copyFile(account, resource.getAbsolutePath(), destination, overwrite);
+			return FileOps.Remote.copyFile(account, resource.getAbsolutePath(), destination, overwrite);
 		}else{
 			return FileOpsStatus.INVALID_DESTINATION_PATH();
 		}
@@ -285,7 +283,7 @@ public class RemoteLibrary extends Library{
 
 	public void moveResource(final FileResource resource, final SimpleHandler onSuccess, final SimpleHandler onFailure, final boolean overwrite) {
 		
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			
 			account.getAuth(
 				new SimpleHandler(){
@@ -309,7 +307,7 @@ public class RemoteLibrary extends Library{
 								}
 								break;
 							case FILE_ALREADY_EXISTS:
-								FileOps.requestOverwrite(arg, new SimpleHandler(){
+								RemoteFileOps.requestOverwrite(arg, new SimpleHandler(){
 									public void handle() {
 										moveResource(resource, arg, true);
 									}
@@ -343,20 +341,20 @@ public class RemoteLibrary extends Library{
 
 	public FileOpsStatus moveResource(FileResource resource, String destination, boolean overwrite) {
 		if(validatePath(destination)){
-			return account.getFileOps().moveFile(account, resource.getAbsolutePath(), destination, overwrite);
+			return FileOps.Remote.moveFile(account, resource.getAbsolutePath(), destination, overwrite);
 		}else{
 			return FileOpsStatus.INVALID_DESTINATION_PATH();
 		}
 	}
 
 	public FileOpsStatus deleteResource(FileResource resource) {
-		return account.getFileOps().deleteFile(account, resource.getAbsolutePath());
+		return FileOps.Remote.deleteFile(account, resource.getAbsolutePath());
 	}
 
 	public void locateResource(final FileResource resource, final SimpleHandler onSuccess, final SimpleHandler onFailure) {	
 		//spawn a graphical interface to request a new path for the resource
 		
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			
 			account.getAuth(
 				new SimpleHandler(){
@@ -402,7 +400,7 @@ public class RemoteLibrary extends Library{
 	}
 	
 	public void loadFolder(final RemoteFolder f, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			account.getAuth(
 				new SimpleHandler(){
 					public void handle() {
@@ -411,7 +409,7 @@ public class RemoteLibrary extends Library{
 				}, null
 			);
 		}else{
-			if(account.getFileOps().loadFolder(account, f).getCode() == FileOpsStatus.Code.SUCCESS){
+			if(FileOps.Remote.loadFolder(account, f).getCode() == FileOpsStatus.Code.SUCCESS){
 				onSuccess.handle();
 			}else{
 				onFailure.handle();
@@ -420,7 +418,7 @@ public class RemoteLibrary extends Library{
 	}
 	
 	public void createFolder(final RemoteFolder parent, final String name, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			account.getAuth(
 				new SimpleHandler(){
 					public void handle() {
@@ -429,7 +427,7 @@ public class RemoteLibrary extends Library{
 				}, null
 			);
 		}else{
-			if(account.getFileOps().createFolder(account, parent, name).getCode() == FileOpsStatus.Code.SUCCESS){
+			if(FileOps.Remote.createFolder(account, parent, name).getCode() == FileOpsStatus.Code.SUCCESS){
 				onSuccess.handle();
 			}else{
 				onFailure.handle();
@@ -438,7 +436,7 @@ public class RemoteLibrary extends Library{
 	}
 
 	public void deleteFolder(final RemoteFolder folder, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			account.getAuth(
 				new SimpleHandler(){
 					public void handle() {
@@ -447,7 +445,7 @@ public class RemoteLibrary extends Library{
 				}, null
 			);
 		}else{
-			if(account.getFileOps().deleteFolder(account, folder).getCode() == FileOpsStatus.Code.SUCCESS){
+			if(FileOps.Remote.deleteFolder(account, folder).getCode() == FileOpsStatus.Code.SUCCESS){
 				onSuccess.handle();
 			}else{
 				onFailure.handle();
@@ -456,7 +454,7 @@ public class RemoteLibrary extends Library{
 	}
 
 	public void copyFolder(final RemoteFolder source, final String target, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			account.getAuth(
 				new SimpleHandler(){
 					public void handle() {
@@ -465,7 +463,7 @@ public class RemoteLibrary extends Library{
 				}, null
 			);
 		}else{
-			if(account.getFileOps().copyFolder(account, source, target).getCode() == FileOpsStatus.Code.SUCCESS){
+			if(FileOps.Remote.copyFolder(account, source, target).getCode() == FileOpsStatus.Code.SUCCESS){
 				onSuccess.handle();
 			}else{
 				onFailure.handle();
@@ -474,7 +472,7 @@ public class RemoteLibrary extends Library{
 	}
 
 	public void moveFolder(final RemoteFolder source, final String target, final SimpleHandler onSuccess, final SimpleHandler onFailure) {
-		if(account.getFileOps().validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
+		if(FileOps.Remote.validateOauth(account).getCode() == FileOpsStatus.Code.INVALID_OAUTH_TOKEN){
 			account.getAuth(
 				new SimpleHandler(){
 					public void handle() {
@@ -483,7 +481,7 @@ public class RemoteLibrary extends Library{
 				}, null
 			);
 		}else{
-			if(account.getFileOps().moveFolder(account, source, target).getCode() == FileOpsStatus.Code.SUCCESS){
+			if(FileOps.Remote.moveFolder(account, source, target).getCode() == FileOpsStatus.Code.SUCCESS){
 				onSuccess.handle();
 			}else{
 				onFailure.handle();
